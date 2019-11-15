@@ -1,0 +1,6 @@
+#!/bin/bash
+cp ~/.tmux.conf .
+cp ~/.vimrc .
+cp -R ~/.config/sway/ .
+cp -R ~/.config/waybar/ .
+cp ~/.gitconfig .
