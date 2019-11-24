@@ -86,7 +86,8 @@ let g:airline_powerline_fonts = 1
 " Text Objects
 Plug 'michaeljsmith/vim-indent-object'
 
-Plug 'ryanoasis/vim-devicons'
+"Plug 'ryanoasis/vim-devicons'
+"Plug 'vwxyutarooo/nerdtree-devicons-syntax'
 
 " Git
 Plug 'tpope/vim-fugitive' " commands
@@ -132,6 +133,19 @@ Plug 'Xuyuanp/nerdtree-git-plugin'
 :let g:NERDTreeWinSize=50
 :let g:NERDTreeDirArrows = 1
 map <C-n> :NERDTreeToggle<CR>
+" calls NERDTreeFind iff NERDTree is active, current window contains a modifiable file, and we're not in vimdiff
+function! s:syncTree()
+  let s:curwnum = winnr()
+  NERDTreeFind
+  exec s:curwnum . "wincmd w"
+endfunction
+function! s:syncTreeIf()
+  if (winnr("$") > 1)
+    call s:syncTree()
+  endif
+endfunction
+" Shows NERDTree on start and synchronizes the tree with opened file when switching between opened windows
+autocmd BufEnter * call s:syncTreeIf()
 
 Plug 'tpope/vim-surround' " Surround text with anything
 Plug 'tpope/vim-repeat' " repeat special commands
