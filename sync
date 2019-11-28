@@ -3,4 +3,5 @@ cp ~/.tmux.conf .
 cp ~/.vimrc .
 cp -R ~/.config/sway/ .
 cp -R ~/.config/waybar/ .
+cp -R ~/.config/fish/ .
 cp ~/.gitconfig .
