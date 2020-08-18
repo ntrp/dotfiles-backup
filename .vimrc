@@ -37,7 +37,7 @@ vnoremap < <gv  " better indentation
 vnoremap > >gv  " better indentation
 
 " disable swap files
-set nobackup 
+set nobackup
 set noswapfile
 
 set undofile "keep persistent undo across vim runs
@@ -49,24 +49,31 @@ set shiftwidth=2
 set shiftround
 set expandtab
 
+noremap <Leader>y "+y
+
 " search settings
 set hlsearch
 set ignorecase
 set smartcase
 
 let base16colorspace=256
+set termguicolors 
 syntax on
 set t_Co=256 " 256 color mode
+highlight Pmenu guibg=white gui=bold
 
 " line numbers
 set relativenumber
 set number
 
+nnoremap <leader><leader> :xa<cr>
+inoremap <leader><leader> <esc>:xa<cr>
+
 " Bootstrap Plug
 let plug_install = 0
 let autoload_plug_path = stdpath('config') . '/autoload/plug.vim'
 if !filereadable(autoload_plug_path)
-    silent exe '!curl -fL --create-dirs -o ' . autoload_plug_path . 
+    silent exe '!curl -fL --create-dirs -o ' . autoload_plug_path .
         \ ' https://raw.github.com/junegunn/vim-plug/master/plug.vim'
     execute 'source ' . fnameescape(autoload_plug_path)
     let plug_install = 1
@@ -75,13 +82,22 @@ unlet autoload_plug_path
 
 call plug#begin('~/.config/nvim/plugins')
 
+" pywal theme
+Plug 'dylanaraps/wal.vim'
+
 " airline
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#tab_nr_type = 1
-set laststatus=2
-let g:airline_powerline_fonts = 1
+
+if !exists('g:airline_symbols')
+  let g:airline_symbols = {}
+endif
+let g:airline_symbols.branch = ''
+let g:airline_symbols.readonly = ''
+let g:airline_symbols.linenr = ''
+let g:airline_symbols.maxlinenr = ' '
 
 " Text Objects
 Plug 'michaeljsmith/vim-indent-object'
@@ -123,32 +139,27 @@ let g:NERDDefaultAlign = 'left'
 let g:NERDCommentEmptyLines = 1
 " Enable trimming of trailing whitespace when uncommenting
 let g:NERDTrimTrailingWhitespace = 1
-" Enable NERDCommenterToggle to check all selected lines is commented or not 
+" Enable NERDCommenterToggle to check all selected lines is commented or not
 let g:NERDToggleCheckAllLines = 1
 
 " NERDTree
 Plug 'scrooloose/nerdtree'
 Plug 'Xuyuanp/nerdtree-git-plugin'
 :let g:NERDTreeAutoDeleteBuffer = 1
-:let g:NERDTreeWinSize=50
+:let g:NERDTreeWinSize=60
 :let g:NERDTreeDirArrows = 1
 map <C-n> :NERDTreeToggle<CR>
-" calls NERDTreeFind iff NERDTree is active, current window contains a modifiable file, and we're not in vimdiff
-function! s:syncTree()
-  let s:curwnum = winnr()
-  NERDTreeFind
-  exec s:curwnum . "wincmd w"
-endfunction
-function! s:syncTreeIf()
-  if (winnr("$") > 1)
-    call s:syncTree()
-  endif
-endfunction
-" Shows NERDTree on start and synchronizes the tree with opened file when switching between opened windows
-autocmd BufEnter * call s:syncTreeIf()
+map <leader>s :NERDTreeFind<CR>
+" open if no files specified
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+
+Plug 'juvenn/mustache.vim' " mustache syntax highlight
 
 Plug 'tpope/vim-surround' " Surround text with anything
 Plug 'tpope/vim-repeat' " repeat special commands
+
+Plug 'hashivim/vim-terraform'
 
 Plug 'leafgarland/typescript-vim', {'for': ['typescript']} " Typescript syntax highlight
 
@@ -160,17 +171,33 @@ Plug 'jparise/vim-graphql' " GraphQL syntax highlight
 Plug 'lepture/vim-velocity' " Velocity syntax highlight
 au BufNewFile,BufRead *.vm,*.vtl set ft=velocity
 
+Plug 'SirVer/ultisnips'
+Plug 'honza/vim-snippets'
+let g:UltiSnipsSnippetDirectories = ['~/.vim/UltiSnips', 'UltiSnips']
+let g:UltiSnipsExpandTrigger="<c-n>"
+let g:UltiSnipsJumpForwardTrigger="<c-b>"
+let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 " Vim CoC
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 let g:coc_global_extensions = [
-  \ 'coc-json',
   \ 'coc-prettier',
-  \ 'coc-tsserver',
+  \ 'coc-ultisnips',
+  \ 'coc-json',
   \ 'coc-css',
-  \ 'coc-tslint',
   \ 'coc-html',
   \ 'coc-yaml',
+  \ 'coc-xml',
+  \ 'coc-svg',
   \ 'coc-python',
+  \ 'coc-tsserver',
+  \ 'coc-tslint',
+  \ 'coc-angular',
+  \ 'coc-markdownlint',
+  \ 'coc-java',
+  \ 'coc-python',
+  \ 'coc-emmet',
+  \ 'coc-metals',
+  \ 'coc-clangd',
   \]
 set cmdheight=2       " Better display for messages
 set updatetime=300    " You will have bad experience for diagnostic messages when it's default 4000.
@@ -188,7 +215,7 @@ function! s:check_back_space() abort
   return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
 " Use <c-space> to trigger completion.
-inoremap <silent><expr> <c-space> coc#refresh()      
+inoremap <silent><expr> <c-space> coc#refresh()
 " Use <cr> to confirm completion, `<C-g>u` means break undo chain at current position.
 " Coc only does snippet and additional edit on confirm.
 inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
@@ -230,7 +257,7 @@ augroup end
 xmap <leader>a  <Plug>(coc-codeaction-selected)
 nmap <leader>a  <Plug>(coc-codeaction-selected)
 " Remap for do codeAction of current line
-nmap <leader>ac  <Plug>(coc-codeaction)
+nmap <leader>as  <Plug>(coc-codeaction)
 " Fix autofix problem of current line
 nmap <leader>qf  <Plug>(coc-fix-current)
 " Create mappings for function text object, requires document symbols feature of languageserver.

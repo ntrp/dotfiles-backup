@@ -1,4 +1,4 @@
-# Defined in /tmp/fish.9MmwWW/g.fish @ line 1
+# Defined in /tmp/fish.Qtaruf/g.fish @ line 1
 function g
-	goto $argv
+  goto $argv
 end

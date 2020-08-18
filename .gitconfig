@@ -3,14 +3,17 @@
 	name = Ivan Greguric Ortolan
 
 [alias]
-  co = checkout
-  ci = commit
-  st = status
-  br = branch
-  hist = log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short
-  type = cat-file -t
-  dump = cat-file -p
+	p = pull
+ 	pr = pull --rebase
+	pu = push
+	co = checkout
+	ci = commit
+	st = status
+	br = checkout -b
+	l = log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short
+
 [credential]
 	helper = /usr/lib/git-core/git-credential-libsecret
+
 [core]
-	editor = vim
+	editor = nvim
