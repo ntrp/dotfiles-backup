@@ -1,26 +1,21 @@
-# Default config for sway
-#
-# Copy this to ~/.config/sway/config and edit it to your liking.
-#
-# Read `man 5 sway` for a complete reference.
+#include "$HOME/.cache/wal/colors-sway"
 
+set $bg           #383c4a
+set $bg-alt       #556183
+set $fg           #d3dae3
+set $fg-alt       #ffffff
+set $hl           #5294e2
 
-set $bg-color 	         #2f343f
-set $inactive-bg-color   #2f343f
-set $text-color          #f3f4f5
-set $inactive-text-color #676E7D
-set $urgent-bg-color     #E53935
+# class                 border     backgr.     text       indicator  child_border
+client.focused          $bg        $bg         $fg-alt    $bg        $bg
+client.focused_inactive $bg        $bg         $fg        $bg        $bg
+client.unfocused        $bg        $bg         $fg        $bg        $bg
+client.urgent           $bg        $bg         $fg        $bg        $bg
+client.placeholder      $bg        $bg         $fg        $bg        $bg
 
-set $cl_high #009ddc
-set $cl_indi #d9d8d8
-set $cl_back #231f20
-set $cl_fore #d9d8d8
-set $cl_urge #ee2e24
+set $font_size 10
 
-set $font_size 20
-
-font pango: DejaVu Sans Mono, FontAwesome Solid $font_size
-set $bg ~/.wp.jpg
+font pango: SF Mono, FontAwesome $font_size
 
 workspace_layout tabbed
 default_border pixel
@@ -30,25 +25,21 @@ hide_edge_borders --i3 both
 focus_follows_mouse no
 focus_on_window_activation focus
 force_display_urgency_hint 500 ms
+seat * hide_cursor 3000
 
-# disable window title for i3-gaps
 for_window [class=".*"] border pixel 0
 
-gaps inner 10
-gaps outer 0
+gaps inner 5
+gaps outer 5
 smart_gaps on
 
 ### Variables
-#
-set $ws1 "1:"
-set $ws2 "2:"
-set $ws3 "3:"
-set $ws4 "4:"
-set $ws5 "5:"
-set $ws6 "6:"
-set $ws7 "7:"
-set $ws8 "8:"
-set $ws9 "9:"
+set $ws1 "1:  "
+set $ws2 "2:  "
+set $ws3 "3:  "
+set $ws4 "4:  "
+set $ws5 "5:  "
+set $ws6 "6:  "
 # Logo key. Use Mod1 for Alt.
 set $mod Mod4
 set $alt Mod1
@@ -59,20 +50,16 @@ set $up Up
 set $right Right
 # Commands
 set $cmd_lock 'swaylock -f -c 000000'
-set $cmd_term kitty
-set $cmd_run rofi -show run
-set $cmd_layout layout_selector
+set $cmd_mute_lock 'playerctl pause & swaylock -f -c 000000'
+set $cmd_term alacritty
+set $cmd_run 'bemenu run'
 
 ### Idle configuration
 exec swayidle -w \
-  timeout 300 $cmd_lock \
-  timeout 360 'swaymsg "output * dpms off"' \
-  resume 'swaymsg "output * dpms on"' \
-  before-sleep $cmd_lock
-
-# This will lock your screen after 300 seconds of inactivity, then turn off
-# your displays after another 300 seconds, and turn your screens back on when
-# resumed. It will also lock your screen before your computer goes to sleep.
+       timeout 300 $cmd_lock \
+       timeout 360 'swaymsg "output * dpms off"' \
+       resume 'swaymsg "output * dpms on"' \
+       before-sleep $cmd_lock
 
 floating_modifier $mod normal
 
@@ -80,7 +67,7 @@ floating_modifier $mod normal
 bindsym $mod+Shift+r reload
 
 # Exit sway (logs you out of your Wayland session)
-bindsym $mod+Shift+Backspace exec swaynagmode -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -b 'Yes, exit sway' 'swaymsg exit'
+bindsym $mod+Shift+Control+Backspace exec swaynagmode -t warning -m 'Exit session?' -b 'Yes' 'swaymsg exit'
 
 #
 # Layout stuff:
@@ -88,8 +75,8 @@ bindsym $mod+Shift+Backspace exec swaynagmode -t warning -m 'You pressed the exi
 # You can "split" the current object of your focus with
 # $mod+b or $mod+v, for horizontal and vertical splits
 # respectively.
-bindsym $mod+b splith
-bindsym $mod+v splitv
+bindsym $mod+Shift+b splith
+bindsym $mod+Shift+v splitv
 
 # Switch the current container between different layout styles
 bindsym $mod+s layout stacking
@@ -98,11 +85,11 @@ bindsym $mod+e layout toggle split
 
 bindsym $mod+f fullscreen
 
-bindsym $mod+Shift+space floating toggle
+bindsym $mod+Shift+f floating toggle
 bindsym $mod+Shift+s sticky toggle
 
 # Swap focus between the tiling area and the floating area
-bindsym $mod+space focus mode_toggle
+bindsym $mod+t focus mode_toggle
 
 bindsym $mod+a focus parent
 bindsym $mod+d focus child
@@ -110,7 +97,6 @@ bindsym $mod+d focus child
 #
 # Scratchpad:
 #
-
 # Sway has a "scratchpad", which is a bag of holding for windows.
 # You can send windows there and get them back later.
 
@@ -121,37 +107,25 @@ bindsym $mod+Shift+minus move scratchpad
 # If there are multiple scratchpad windows, this command cycles through them.
 bindsym $mod+minus scratchpad show
 
-# Colors                border   bg       text     indi     childborder
-client.focused          $cl_high $cl_high $cl_fore $cl_indi $cl_high
-client.focused_inactive $cl_back $cl_back $cl_fore $cl_back $cl_back
-client.unfocused        $cl_back $cl_back $cl_fore $cl_back $cl_back
-client.urgent           $cl_urge $cl_urge $cl_fore $cl_urge $cl_urge
-
 #
 # Status Bar:
 #
 # Read `man 5 sway-bar` for more information about this section.
-#bar {
-#	  status_command i3blocks -c ~/.config/i3/blocks.conf
-#    position top
-#	  tray_output primary
-#  	tray_padding 0
-#	  strip_workspace_numbers yes
-#    colors {
-#		    statusline #ffffff
-#		    background $bg-color
-#		    separator #757575
-#		    #                  border             background         text
-#		    focused_workspace  $bg-color          $bg-color          $text-color
-#		    inactive_workspace $inactive-bg-color $inactive-bg-color $inactive-text-color
-#		    urgent_workspace   $urgent-bg-color   $urgent-bg-color   $text-color
-#    }
-#}
+bar {
+    status_command i3status-rs ~/.config/i3status-rs/config.toml
+    height 24
+    position top
+    tray_output primary
+    tray_padding 0
+    strip_workspace_numbers yes
+    colors {
+        background $bg
+        #                  border             background         text
+        focused_workspace  $bg                $bg-alt            $fg
+        inactive_workspace $bg                $bg                $fg
+        urgent_workspace   $bg                $bg                $hl
+    }
+}
 
 include /etc/sway/config.d/*
 include ~/.config/sway/config.d/*
-
-bar {
-    swaybar_command waybar
-	  strip_workspace_numbers yes
-}

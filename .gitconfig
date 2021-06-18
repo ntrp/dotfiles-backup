@@ -10,10 +10,18 @@
 	ci = commit
 	st = status
 	br = checkout -b
-	l = log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short
+	s  = stash
+	sp = stash pop
+	sl = stash list
+	l = log --graph --pretty=format:'%C(white)%h%Creset %C(cyan)(%ar)%Creset %s %C(yellow)%d%Creset %C(bold blue)<%an>%Creset' --date=short
 
 [credential]
 	helper = /usr/lib/git-core/git-credential-libsecret
 
 [core]
 	editor = nvim
+	pager = less -S
+[pull]
+	rebase = true
+[commit]
+	gpgsign = true
