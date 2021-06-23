@@ -1,0 +1,32 @@
+-- http://projects.haskell.org/xmobar/
+-- I use Font Awesome 5 fonts in this config for unicode "icons".  On Arch Linux,
+-- install this package from the AUR to get these fonts: otf-font-awesome-5-free
+
+Config { font    = "xft:Ubuntu:weight=bold:pixelsize=36:antialias=true:hinting=true"
+       , additionalFonts = [ "xft:Mononoki Nerd Font:pixelsize=11:antialias=true:hinting=true"
+                           , "xft:Font Awesome 5 Free Solid:pixelsize=24"
+                           , "xft:Font Awesome 5 Brands:pixelsize=24"
+                           ]
+       , bgColor = "#282c34"
+       , fgColor = "#ff6c6b"
+       , position = Static { xpos = 0 , ypos = 0, width = 3840, height = 60}
+       , lowerOnStart = True
+       , hideOnStart = False
+       , allDesktops = True
+       , persistent = True
+       , iconRoot = "/home/ntrp/.xmonad/xpm/"  -- default: "."
+       , commands = [
+                    -- Time and date
+                      Run Date "<fn=2>\xf017</fn> %a %d/%m %R" "date" 50
+                      -- Network up and down
+                    , Run Network "wlp0s20f3" ["-t", "<fn=2>\xf0ab</fn> <rx>kb <fn=2>\xf0aa</fn> <tx>kb"] 20
+                      -- Ram used number
+                    , Run Memory ["-t", "<fn=2>\xf233</fn> <used>M"] 20
+                      -- Disk space free
+                    , Run UnsafeStdinReader
+                    ]
+       , sepChar = "%"
+       , alignSep = "}{"
+       , template = " <icon=haskell_20.xpm/> %UnsafeStdinReader% }{ <fc=#ff6c6b>%memory%</fc>  <fc=#98be65>%wlp0s20f3%</fc>  <fc=#46d9ff>%date%</fc> "
+       }
+
